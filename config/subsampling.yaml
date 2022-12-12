@@ -1,0 +1,21 @@
+focal:
+  query: "(country == 'USA')"
+
+closest:
+  subsample-max-sequences: 1
+  priorities:
+    type: "proximity"
+    focus: "focal"
+
+group:
+  group-by: ["year", "month"]
+  subsample-max-sequences: 25
+  query: "(country == 'Algeria') & (division == 'Medea')"
+  priorities:
+    type: "proximity"
+    focus: "focal"
+
+international_serial_sampling:
+  group-by: ["region", "year", "month"]
+  sequences-per-group: 2
+  query: "(country != 'Algeria')"

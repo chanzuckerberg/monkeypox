@@ -1,5 +1,6 @@
 focal:
-  query: "(country == 'USA')"
+  exclude-all: true
+  include: config/include.txt
 
 closest:
   subsample-max-sequences: 1

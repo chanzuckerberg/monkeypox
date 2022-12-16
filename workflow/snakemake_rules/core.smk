@@ -163,7 +163,7 @@ rule subsample:
     input:
         sequences=rules.align.output.alignment,
         metadata=rules.filter.output.metadata,
-        include=rules.include_A_strains.output.include_strains,
+        include="config/include.txt",
         reference=config["reference"],
         subsampling_config="config/subsampling.yaml",
     output:

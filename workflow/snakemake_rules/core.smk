@@ -109,44 +109,9 @@ rule filter:
         """
 
 
-rule subsample:
-    message:
-        """
-        subsampling to
-          - {params.sequences_per_group} TODO TODO FIXME sequence(s) per {params.group_by!s}
-        """
-    input:
-        sequences=rules.align.output.alignment,
-        metadata=rules.filter.output.metadata,
-        include=rules.include_A_strains.output.include_strains,
-        reference=config["reference"],
-	subsampling_config=config["subsampling_config"],
-    output:
-        sequences=build_dir + "/{build_name}/subsampled.fasta",
-        metadata=build_dir + "/{build_name}/metadata.tsv",
-        log=build_dir + "/{build_name}/filter.log",
-    params:
-        group_by=config.get("group_by", "--group-by clade lineage"),
-        sequences_per_group=config["sequences_per_group"],
-        other_filters=config.get("filters", ""),
-    shell:
-        """
-        python3 ~/mpx-test-workflow/ncov/scripts/subsample.py \
-            --scheme {input.subsampling_config} \
-            --reference {input.reference} \
-            --alignment {input.sequences} \
-            --metadata {input.metadata} \
-            --include-strains-file {input.include} \
-            --output-fasta {output.sequences} \
-            --output-metadata {output.metadata} \
-            --output-log {output.log} \
-            --output-dir . | tee {output.log}
-        """
-
-
 rule separate_reverse_complement:
     input:
-        metadata=build_dir + "/{build_name}/metadata.tsv",
+        metadata=build_dir + "/{build_name}/filtered_metadata.tsv",
         sequences=build_dir + "/{build_name}/filtered.fasta",
     output:
         build_dir + "/{build_name}/reversed.fasta",
@@ -188,6 +153,35 @@ rule align:
             --output-fasta - \
             --output-insertions {output.insertions} \
             {input.sequences} | seqkit seq -i > {output.alignment}
+        """
+
+rule subsample:
+    message:
+        """
+        subsampling
+        """
+    input:
+        sequences=rules.align.output.alignment,
+        metadata=rules.filter.output.metadata,
+        include=rules.include_A_strains.output.include_strains,
+        reference=config["reference"],
+        subsampling_config=config.get("subsampling_config", "config/scheme.yaml"),
+    output:
+        sequences=build_dir + "/{build_name}/subsampled.fasta",
+        metadata=build_dir + "/{build_name}/metadata.tsv",
+        log=build_dir + "/{build_name}/filter.log",
+    shell:
+        """
+        python3 ~/mpx-test-workflow/ncov/scripts/subsample.py \
+            --scheme {input.subsampling_config} \
+            --reference {input.reference} \
+            --alignment {input.sequences} \
+            --metadata {input.metadata} \
+            --include-strains-file {input.include} \
+            --output-fasta {output.sequences} \
+            --output-metadata {output.metadata} \
+            --output-log {output.log} \
+            --output-dir . | tee {output.log}
         """
 
 

@@ -41,6 +41,3 @@ mask:
   from_beginning: 1350
   from_end: 6422
   maskfile: "config/mask_overview.bed"
-
-## subsampling
-subsampling_config: "config/subsampling.yaml"

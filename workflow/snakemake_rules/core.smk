@@ -165,7 +165,7 @@ rule subsample:
         metadata=rules.filter.output.metadata,
         include=rules.include_A_strains.output.include_strains,
         reference=config["reference"],
-        subsampling_config=config.get("subsampling_config", "config/scheme.yaml"),
+        subsampling_config="config/subsampling.yaml",
     output:
         sequences=build_dir + "/{build_name}/subsampled.fasta",
         metadata=build_dir + "/{build_name}/metadata.tsv",

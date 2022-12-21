@@ -28,42 +28,9 @@ rule wrangle_metadata:
         """
 
 
-rule exclude_bad:
-    message:
-        """
-        Removing strains that violate one of
-          - from {params.min_date} onwards
-          - excluding strains in {input.exclude}
-          - minimum genome length of {params.min_length}
-        """
-    input:
-        sequences="data/sequences.fasta",
-        metadata="results/metadata.tsv",
-        exclude=config["exclude"],
-    output:
-        sequences=build_dir + "/{build_name}/good_sequences.fasta",
-        metadata=build_dir + "/{build_name}/good_metadata.tsv",
-        log=build_dir + "/{build_name}/good_filter.log",
-    params:
-        min_date=config["min_date"],
-        min_length=config["min_length"],
-    shell:
-        """
-        augur filter \
-            --sequences {input.sequences} \
-            --metadata {input.metadata} \
-            --exclude {input.exclude} \
-            --output-sequences {output.sequences} \
-            --output-metadata {output.metadata} \
-            --min-date {params.min_date} \
-            --min-length {params.min_length} \
-            --output-log {output.log}
-        """
-
-
 rule include_A_strains:
     input:
-        metadata=rules.exclude_bad.output.metadata,
+        metadata=rules.wrangle_metadata.output.metadata,
     output:
         include_strains=build_dir + "/{build_name}/include_strains.txt",
     shell:
@@ -75,94 +42,14 @@ rule include_A_strains:
         > {output.include_strains}
         """
 
-
-rule filter:
-    message:
-        """
-        Filtering to
-          - {params.sequences_per_group} sequence(s) per {params.group_by!s}
-        """
-    input:
-        sequences=rules.exclude_bad.output.sequences,
-        metadata=rules.exclude_bad.output.metadata,
-        include=rules.include_A_strains.output.include_strains,
-    output:
-        sequences=build_dir + "/{build_name}/filtered.fasta",
-        metadata=build_dir + "/{build_name}/filtered_metadata.tsv",
-        log=build_dir + "/{build_name}/filter.log",
-    params:
-        group_by=config.get("group_by", "--group-by clade lineage"),
-        sequences_per_group=config["sequences_per_group"],
-        other_filters=config.get("filters", ""),
-    shell:
-        """
-        augur filter \
-            --sequences {input.sequences} \
-            --metadata {input.metadata} \
-            --include {input.include} \
-            --output-sequences {output.sequences} \
-            --output-metadata {output.metadata} \
-            {params.group_by} \
-            {params.sequences_per_group} \
-            {params.other_filters} \
-            --output-log {output.log}
-        """
-
-
-rule separate_reverse_complement:
-    input:
-        metadata=build_dir + "/{build_name}/filtered_metadata.tsv",
-        sequences=build_dir + "/{build_name}/filtered.fasta",
-    output:
-        build_dir + "/{build_name}/reversed.fasta",
-    shell:
-        """
-        python3 scripts/reverse_reversed_sequences.py \
-            --metadata {input.metadata} \
-            --sequences {input.sequences} \
-            --output {output}
-        """
-
-
-rule align:
-    message:
-        """
-        Aligning sequences to {input.reference}
-          - filling gaps with N
-        """
-    input:
-        sequences=rules.separate_reverse_complement.output,
-        reference=config["reference"],
-        genemap=config["genemap"],
-    output:
-        alignment=build_dir + "/{build_name}/aligned.fasta",
-        insertions=build_dir + "/{build_name}/insertions.fasta",
-    params:
-        max_indel=config["max_indel"],
-        seed_spacing=config["seed_spacing"],
-    threads: workflow.cores
-    shell:
-        """
-        nextalign run \
-            --jobs {threads} \
-            --reference {input.reference} \
-            --genemap {input.genemap} \
-            --max-indel {params.max_indel} \
-            --seed-spacing {params.seed_spacing} \
-            --retry-reverse-complement \
-            --output-fasta - \
-            --output-insertions {output.insertions} \
-            {input.sequences} | seqkit seq -i > {output.alignment}
-        """
-
 rule subsample:
     message:
         """
         subsampling
         """
     input:
-        sequences=rules.align.output.alignment,
-        metadata=rules.filter.output.metadata,
+        sequences="data/sequences.fasta",
+        metadata=rules.wrangle_metadata.output.metadata,
         include="config/include.txt",
         reference=config["reference"],
         subsampling_config="config/subsampling.yaml",

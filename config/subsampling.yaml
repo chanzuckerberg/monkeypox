@@ -3,20 +3,17 @@ focal:
   include: config/include.txt
 
 closest:
-  subsample-max-sequences: 1
+  subsample-max-sequences: 10
+  min-length: 10000
+  min-date: "2022-01-01"
   priorities:
     type: "proximity"
     focus: "focal"
 
 group:
-  group-by: ["year", "month"]
-  subsample-max-sequences: 25
-  query: "(country == 'Algeria') & (division == 'Medea')"
+  subsample-max-sequences: 10
+  query: "(country == 'Canada')"
   priorities:
     type: "proximity"
     focus: "focal"
 
-international_serial_sampling:
-  group-by: ["region", "year", "month"]
-  sequences-per-group: 2
-  query: "(country != 'Algeria')"

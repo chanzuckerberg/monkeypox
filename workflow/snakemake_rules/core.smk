@@ -59,7 +59,7 @@ rule subsample:
         log=build_dir + "/{build_name}/filter.log",
     shell:
         """
-        python3 ~/mpx-test-workflow/ncov/scripts/subsample.py \
+        python3 scripts/subsample.py \
             --scheme {input.subsampling_config} \
             --reference {input.reference} \
             --alignment {input.sequences} \

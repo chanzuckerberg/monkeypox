@@ -42,6 +42,18 @@ rule include_A_strains:
         > {output.include_strains}
         """
 
+rule write_subsampling:
+    message:
+        """
+        write subsampling config.
+        """
+    output:
+        subsampling_config=build_dir + "/{build_name}/subsampling.yaml",
+    run:
+        import yaml
+        with open(output.subsampling_config, 'w') as file:
+            yaml.dump(config["subsampling"], file)
+
 rule subsample:
     message:
         """
@@ -52,7 +64,7 @@ rule subsample:
         metadata=rules.wrangle_metadata.output.metadata,
         include="data/include.txt",
         reference=config["reference"],
-	subsampling_config=write_subsampling_config(config['subsampling'], build_dir + "/subsampling.yaml"),
+	subsampling_config=rules.write_subsampling.output.subsampling_config,
     output:
         sequences=build_dir + "/{build_name}/subsampled.fasta",
         metadata=build_dir + "/{build_name}/metadata.tsv",

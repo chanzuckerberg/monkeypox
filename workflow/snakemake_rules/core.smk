@@ -52,7 +52,7 @@ rule subsample:
         metadata=rules.wrangle_metadata.output.metadata,
         include="data/include.txt",
         reference=config["reference"],
-        subsampling_config="config/subsampling.yaml",
+	subsampling_config=write_subsampling_config(config['subsampling'], build_dir + "/subsampling.yaml"),
     output:
         sequences=build_dir + "/{build_name}/subsampled.fasta",
         metadata=build_dir + "/{build_name}/metadata.tsv",

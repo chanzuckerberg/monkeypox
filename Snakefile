@@ -49,8 +49,7 @@ rule rename:
 
 
 include: "workflow/snakemake_rules/chores.smk"
-
-
+include: "workflow/snakemake_rules/common.smk"
 include: "workflow/snakemake_rules/core.smk"
 
 

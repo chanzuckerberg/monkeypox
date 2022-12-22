@@ -50,7 +50,7 @@ rule subsample:
     input:
         sequences="data/sequences.fasta",
         metadata=rules.wrangle_metadata.output.metadata,
-        include="config/include.txt",
+        include="data/include.txt",
         reference=config["reference"],
         subsampling_config="config/subsampling.yaml",
     output:

@@ -48,7 +48,7 @@ def register_arguments(parser):
         help="reference (which was used for alignment)",
     )
     parser.add_argument(
-        "--include-strains-file",
+        "--include",
         required=False,
         nargs="+",
         default=None,
@@ -56,7 +56,7 @@ def register_arguments(parser):
         help="strains to force include",
     )
     parser.add_argument(
-        "--exclude-strains-file",
+        "--exclude",
         required=False,
         nargs="+",
         default=None,

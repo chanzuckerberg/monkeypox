@@ -76,7 +76,7 @@ rule subsample:
             --reference {input.reference} \
             --alignment {input.sequences} \
             --metadata {input.metadata} \
-            --include-strains-file {input.include} \
+            --include {input.include} \
             --output-fasta {output.sequences} \
             --output-metadata {output.metadata} \
             --output-log {output.log} \

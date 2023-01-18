@@ -1,20 +1,21 @@
-from argparse import ArgumentDefaultsHelpFormatter, ArgumentParser
-from os import path
-from tempfile import NamedTemporaryFile
-
-import jsonschema
-import pandas as pd
-import yaml
-from augur.filter import register_arguments as register_filter_arguments
-from augur.filter import run as augur_filter
+from augur.filter import (
+    run as augur_filter,
+    register_arguments as register_filter_arguments,
+)
 from augur.index import index_sequences
-from augur.io import open_file, read_metadata, read_sequences, write_sequences
+from augur.io import write_sequences, open_file, read_sequences, read_metadata
 from get_distance_to_focal_set import (
-    get_distance_to_focal_set,  # eventually from augur.priorities (or similar)
-)
+    get_distance_to_focal_set,
+)  # eventually from augur.priorities (or similar)
 from priorities import (
-    create_priorities,  # eventually from augur.priorities (or similar)
-)
+    create_priorities,
+)  # eventually from augur.priorities (or similar)
+import yaml
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+from os import path
+import pandas as pd
+from tempfile import NamedTemporaryFile
+import jsonschema
 
 # from pkg_resources import resource_string
 
@@ -152,6 +153,8 @@ class Sample:
     def __init__(self, name, config, cmd_args):
         self.name = name
         self.tmp_dir = cmd_args.output_dir
+        self.include = cmd_args.include_strains_file
+        self.exclude = cmd_args.exclude_strains_file
         self.alignment = cmd_args.alignment
         self.alignment_index = cmd_args.alignment_index
         self.reference = cmd_args.reference
@@ -190,6 +193,12 @@ class Sample:
             "--output-log",
             path.join(self.tmp_dir, f"sample.{self.name}.log.tsv"),
         ]
+        if self.include:
+            arg_list.append("--include")
+            arg_list.extend(self.include)
+        if self.exclude:
+            arg_list.append("--exclude")
+            arg_list.extend(self.exclude)
         # convert the YAML config into the command-line arguments for augur filter
         for name, value in config.items():
             if isinstance(value, dict):
@@ -261,10 +270,7 @@ class Sample:
         else:
             print(f"Calculating priorities of {self.name}")
             create_priorities(
-                self.alignment_index,
-                proximity_output_file,
-                priorities_path,
-                crowding_penalty=0,
+                self.alignment_index, proximity_output_file, priorities_path
             )
         return priorities_path
 

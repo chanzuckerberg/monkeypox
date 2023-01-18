@@ -270,7 +270,7 @@ class Sample:
         else:
             print(f"Calculating priorities of {self.name}")
             create_priorities(
-                self.alignment_index, proximity_output_file, priorities_path
+                self.alignment_index, proximity_output_file, priorities_path, crowding_penalty=0
             )
         return priorities_path
 

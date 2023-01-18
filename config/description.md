@@ -1,15 +1,12 @@
+We adapted the workflow, the description and the acknowledgement below from the Nextstrain team's [mpox workflow](https://github.com/nextstrain/monkeypox), with additional functionalities to add closely related contextual data.
+
+#### Acknowledgement
 We gratefully acknowledge the authors, originating and submitting laboratories of the genetic sequences and metadata for sharing their work. Please note that although data generators have generously shared data in an open fashion, that does not mean there should be free license to publish on this data. Data generators should be cited where possible and collaborations should be sought in some circumstances. Please try to avoid scooping someone else's work. Reach out if uncertain.
 
-We maintain two views of monkeypox virus evolution:
-
-The first is [`monkeypox/hmpxv1`](https://nextstrain.org/monkeypox/hmpxv1), which focuses on recent viruses transmitting from human-to-human and includes viruses belonging to the hMPXV1 clade as denoted by [Happi et al](https://virological.org/t/urgent-need-for-a-non-discriminatory-and-non-stigmatizing-nomenclature-for-monkeypox-virus/853). Here, we conduct a molecular clock analysis in which evolutionary rate is estimated from the data (with a resulting estimate of ~6 &times; 10<sup>-5</sup> subs per site per year).
-
-The second is [`monkeypox/mpxv`](https://nextstrain.org/monkeypox/mpxv), which focuses on broader viral diversity and includes viruses from the animal reservoir and previous human outbreaks, encompassing clades I, IIa and IIb as described in [Happi et al](https://virological.org/t/urgent-need-for-a-non-discriminatory-and-non-stigmatizing-nomenclature-for-monkeypox-virus/853) with and recently endorsed by a [WHO convened consultation](https://worldhealthorganization.cmail20.com/t/ViewEmail/d/422BD62D623B6A3D2540EF23F30FEDED/F75AF81C90108C72B4B1B1F623478121?alternativeLink=False).
-
-
 #### Analysis
-Our bioinformatic processing workflow can be found at [github.com/nextstrain/monkeypox](https://github.com/nextstrain/monkeypox) and includes:
-- sequence alignment by [nextalign](https://docs.nextstrain.org/projects/nextclade/en/stable/user/nextalign-cli.html)
+Our bioinformatic processing workflow can be found at [github.com/chanzuckerberg/monkeypox](https://github.com/chanzuckerberg/monkeypox) and includes:
+- sequence alignment by [nextalign](https://docs.nextstrain.org/projects/nextclade/en/stable/user/nextalign-cli.html) 
+- add closely related contextual sequences from GenBank
 - masking several regions of the genome, including the first 1500 and last 7000 base pairs and a repetitive region of variable length
 - phylogenetic reconstruction using [IQTREE](http://www.iqtree.org/)
 - ancestral state reconstruction and temporal inference using [TreeTime](https://github.com/neherlab/treetime)

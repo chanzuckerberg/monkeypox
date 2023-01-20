@@ -1,7 +1,8 @@
 {
   "title": "Genomic epidemiology of monkeypox virus",
   "maintainers": [
-    {"name": "Nextstrain team", "url": "http://nextstrain.org"}
+    {"name": "Chan Zuckerberg Initiative",
+     "url": "https://chanzuckerberg.com"}
   ],
   "data_provenance": [
     {
@@ -9,7 +10,6 @@
       "url": "https://www.ncbi.nlm.nih.gov/genbank/"
     }
   ],
-  "build_url": "https://github.com/nextstrain/monkeypox",
   "colorings": [
     {
       "key": "outbreak",
@@ -34,6 +34,11 @@
     {
       "key": "country",
       "title": "Country",
+      "type": "categorical"
+    },
+    {
+      "key": "division",
+      "title": "Division",
       "type": "categorical"
     },
     {
@@ -79,6 +84,7 @@
   "filters": [
     "clade_membership",
     "lineage",
+    "division",
     "country",
     "region",
     "recency",

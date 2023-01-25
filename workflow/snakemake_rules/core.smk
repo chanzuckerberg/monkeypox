@@ -50,9 +50,10 @@ rule write_subsampling:
     output:
         subsampling_config=build_dir + "/{build_name}/subsampling.yaml",
     run:
-        import yaml
+	# YAML is annoying to configure to handle OrderedDicts, but we can
+	# take advantage of the fact that yaml is a superset of json here.
         with open(output.subsampling_config, 'w') as file:
-            yaml.dump(config["subsampling"], file)
+            json.dump(config["subsampling"], file)
 
 rule subsample:
     message:

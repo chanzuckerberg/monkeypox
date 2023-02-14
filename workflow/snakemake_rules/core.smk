@@ -191,6 +191,7 @@ rule refine:
             {params.clock_std_dev} \
             --output-node-data {output.node_data} \
             --coalescent {params.coalescent} \
+	    --divergence-units mutations \
             --date-inference {params.date_inference} \
             --date-confidence \
             --clock-filter-iqd {params.clock_filter_iqd}
